@@ -1,0 +1,36 @@
+set shell := ["bash", "-cu"]
+
+CXX := "g++"
+CXXFLAGS := "-std=c++17 -O2 -Wall -Wextra -pedantic"
+BIN := "./main"
+
+build:
+    {{CXX}} {{CXXFLAGS}} template.cpp -o {{BIN}}
+
+test-samples: build
+    #!/usr/bin/env bash
+    set -euo pipefail
+    pass=0
+    total=0
+    for input in "sample input"/*.txt; do
+        total=$((total + 1))
+        name=${input##*/}
+        num=${name#sample input }
+        num=${num%.txt}
+        expected="sample output/sample output $num.txt"
+        out="/tmp/lab1_sample_$num.out"
+        exp="/tmp/lab1_sample_$num.exp"
+        {{BIN}} < "$input" | tr -d '\r' | awk '1' > "$out"
+        tr -d '\r' < "$expected" | awk '1' > "$exp"
+        if diff -u "$out" "$exp" >/tmp/lab1_sample_"$num".diff; then
+            echo "sample $num: PASS"
+            pass=$((pass + 1))
+        else
+            echo "sample $num: FAIL"
+            cat /tmp/lab1_sample_"$num".diff
+        fi
+    done
+    echo "$pass/$total sample tests passed"
+    test "$pass" -eq "$total"
+
+test-all: test-samples

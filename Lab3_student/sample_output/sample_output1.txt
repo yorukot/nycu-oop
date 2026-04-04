@@ -1,0 +1,5 @@
+Hoodie Sold out!!!
+--- Inventory Summary ---
+[Product] Laptop | Price: 35000 | Stock: 0 | Warranty: 12 months
+[Product] Hoodie | Price: 1200 | Stock: 5 | Size: L
+Total items sold: 1

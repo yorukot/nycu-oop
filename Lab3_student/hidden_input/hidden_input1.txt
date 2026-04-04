@@ -1,0 +1,8 @@
+7
+E GraphicsCard 15000 10 36
+E CPU 9000 5 36
+P GraphicsCard 5
+P GraphicsCard 4
+P CPU 2
+P GraphicsCard 1
+P CPU 3

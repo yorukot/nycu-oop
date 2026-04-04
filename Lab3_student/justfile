@@ -1,0 +1,11 @@
+build:
+	g++ main.cpp Product.cpp Electronics.cpp Clothing.cpp OrderSystem.cpp -o lab3
+
+run: build
+	./lab3
+
+sample1: build
+	./lab3 < sample_input/sample_input1.txt
+
+sample2: build
+	./lab3 < sample_input/sample_input2.txt

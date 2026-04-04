@@ -1,0 +1,8 @@
+7
+C Jeans 1800 3 M
+E Tablet 12000 2 12
+P Jeans 0
+P Tablet 1
+P Jeans 10
+P Tablet 2
+P Jeans 1

@@ -1,0 +1,5 @@
+4
+E Laptop 35000 1 12
+C Hoodie 1200 5 L
+P Laptop 1
+P Hoodie 100
