@@ -94,7 +94,7 @@ void MY_SYSTEM_APP::updateGraphManagerTitle()
     ostringstream strs;
     ostringstream strs_d;
 
-    title = "SYSTEM_TYPE_GRAPH  ";
+    title = "Name:HSIAO-ERHHSI   ID:614002201   SYSTEM_TYPE_GRAPH";
 
     {
         double numCurves = mGraphManager.getNumCurves();

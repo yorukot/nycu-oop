@@ -21,9 +21,8 @@ void rotatePoint(float x, float y, float angle, float& nx, float& ny) {
 
 	nx = x;
 	ny = y;
-	///////////////////////////////////////////////////////
-	// TODO: ADD YOUR OWN CODE
-	///////////////////////////////////////////////////////
+	nx = static_cast<float>(x * cosA - y * sinA);
+	ny = static_cast<float>(x * sinA + y * cosA);
 }
 
 //
@@ -129,12 +128,7 @@ void CURVE::getIntervalOfX(double& xMin, double& xMax) const
 //
 int CURVE::getNumOfSamples() const
 {
-	//The number sample points is mNumSamples;
-	///////////////////////////////////////////////////////
-	// TODO: ADD YOUR OWN CODE
-	///////////////////////////////////////////////////////
-
-	return 2;
+	return mNumSamples;
 }
 
 //
@@ -152,20 +146,19 @@ void CURVE::setNumOfSamplePoints(int num)
 //
 double CURVE::getValue(double x) const
 {
-	///////////////////////////////////////////////////////
-	// TODO: ADD YOUR OWN CODE or modify the code
-	///////////////////////////////////////////////////////
 	double y = 0;
 	switch (mCurveType) {
 	case CURVE_TYPE_EXPONENTIAL:
-		x = x;
-		y = x;
+	{
+		double w = x / 5.0;
+		y = w + (c + std::cos(16.0 * d * w)) * std::exp(-w);
 		break;
+	}
 	case CURVE_TYPE_FUNC2:
-		y = x*x;
+		y = c * x - d * std::sin(8.0 * std::sin(x));
 		break;
 	case CURVE_TYPE_FUNC3:
-		y = sin(x*6);
+		y = c * x + 4.0 * std::cos(x) + d;
 		break;
 	}
 
@@ -203,12 +196,18 @@ void CURVE::setRandom_D(double u0, double u1)
 // 
 void CURVE::getBoundaryPoint(int point_index, double& x, double& y) const
 {
+	if (mPoints.empty()) {
+		x = 0.0;
+		y = 0.0;
+		return;
+	}
 
 	x = mPoints[0].x;
 	y = mPoints[0].y;
-	///////////////////////////////////////////////////////
-	// TODO: ADD YOUR OWN CODE
-	///////////////////////////////////////////////////////
+	if (point_index == 1) {
+		x = mPoints[mPoints.size() - 1].x;
+		y = mPoints[mPoints.size() - 1].y;
+	}
 }
 
 //
@@ -220,6 +219,8 @@ void CURVE::getExtremePoints(vector<double>& X, vector<double>& Y) const
 {
 	X.clear();
 	Y.clear();
+	if (mPoints.size() < 3) return;
+
 	for (int i = 1; i < mNumSamples - 1; ++i) {
 		double x = mPoints[i].x;
 		double y = mPoints[i].y;
@@ -227,9 +228,10 @@ void CURVE::getExtremePoints(vector<double>& X, vector<double>& Y) const
 		double yL = mPoints[i - 1].y;
 		double yR = mPoints[i + 1].y;
 
-		///////////////////////////////////////////////////////
-		// TODO: ADD YOUR OWN CODE
-		///////////////////////////////////////////////////////
+		if ((y > yL && y > yR) || (y < yL && y < yR)) {
+			X.push_back(x);
+			Y.push_back(y);
+		}
 	}
 }
 
@@ -247,16 +249,13 @@ void CURVE::computePoints( ) {
 		float y;
 		float x;
 		x = x0 + (i / ((double)mNumSamples - 1)) * (x1 - x0);
-		y = 0;
-		///////////////////////////////////////////////////////
-		// TODO: ADD YOUR OWN CODE or modify the code
-		///////////////////////////////////////////////////////
-		// y = func( x );
-		// rotate (x, y);
+		y = static_cast<float>(getValue(x));
 		{
-			float nx;
-			float ny;
-			// rotate point (x,y)
+			float nx = x;
+			float ny = y;
+			if (mEnabledRotation) {
+				rotatePoint(x, y, mAngle, nx, ny);
+			}
 			x = nx;
 			y = ny;
 		}

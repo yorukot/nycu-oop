@@ -13,6 +13,7 @@ CIRCLE::CIRCLE(const vector3& p, float r)
 {
 	this->p = p;
 	this->r = r;
+	v = vector3(0, 0, 0);
 }
 
 void CIRCLE::reset()
@@ -39,20 +40,18 @@ void CIRCLE_MANAGER::reset()
 
 		r = getRand(1, 3);
         mCircles.emplace_back(p, r);
+		mCircles.back().reset();
 	}
 }
 
 
 // Check collision between two CIRCLEs
 bool isColliding(const CIRCLE& c1, const CIRCLE& c2) {
-    bool flg = false;
-
-    ///////////////////////////////////////////////////////
-    // TODO: ADD YOUR OWN CODE
-    ///////////////////////////////////////////////////////
-
-
-    return flg;
+    double dx = c1.p.x - c2.p.x;
+    double dy = c1.p.y - c2.p.y;
+    double dist2 = dx * dx + dy * dy;
+    double r = c1.r + c2.r;
+    return dist2 < r * r;
 }
 
 // Resolve collision by pushing CIRCLEs apart
@@ -65,10 +64,24 @@ void resolveCollision(CIRCLE& c1, CIRCLE& c2) {
     // If no, return
     // If yes, push each CIRCLE away equally
     // You can use copilot to generete the source code here.
+	const double minDist = c1.r + c2.r;
+	if (dist >= minDist) return;
 
-    ///////////////////////////////////////////////////////
-    // TODO: ADD YOUR OWN CODE
-    ///////////////////////////////////////////////////////
+	if (dist <= 1e-8) {
+		dx = minDist;
+		dy = 0.0;
+		dist = minDist;
+	}
+
+	double overlap = minDist - dist;
+	double nx = dx / dist;
+	double ny = dy / dist;
+	double half = overlap * 0.5;
+
+	c1.p.x += static_cast<float>(nx * half);
+	c1.p.y += static_cast<float>(ny * half);
+	c2.p.x -= static_cast<float>(nx * half);
+	c2.p.y -= static_cast<float>(ny * half);
 
 }
 
@@ -84,10 +97,15 @@ void CIRCLE_MANAGER::resolveCollisions() {
     //        }
     //    }
     //}
-
-    ///////////////////////////////////////////////////////
-    // TODO: ADD YOUR OWN CODE
-    ///////////////////////////////////////////////////////
+	for (size_t i = 0; i < mCircles.size(); ++i) {
+		CIRCLE& ci = mCircles[i];
+		for (size_t j = i + 1; j < mCircles.size(); ++j) {
+			CIRCLE& cj = mCircles[j];
+			if (isColliding(ci, cj)) {
+				resolveCollision(ci, cj);
+			}
+		}
+	}
 
     // need to make sure the circles are about the line y = 0
     for (size_t i = 0; i < mCircles.size(); ++i) {
@@ -97,11 +115,10 @@ void CIRCLE_MANAGER::resolveCollisions() {
 
         // Check if the circle above y = 0?
         if (y - ci.r < 0) {
-            // if no, modify ci.p.y to set circle above y= 0
-            //ci.p.y += ???;
-            ///////////////////////////////////////////////////////
-            // TODO: ADD YOUR OWN CODE
-            ///////////////////////////////////////////////////////
+            ci.p.y += static_cast<float>(ci.r - y);
+            if (ci.v.y < 0.0f) {
+                ci.v.y = 0.0f;
+            }
 
         }
     }
@@ -125,15 +142,16 @@ void CIRCLE_MANAGER::applyForce()
     vector3 g(0.0, -9.0, 0.0);
     for (size_t i = 0; i < mCircles.size(); ++i) {
         CIRCLE& ci = mCircles[i];
-        /*
-        x = circle i's x-coordinate;
-        y = circle i's y-coordinate;
+		float x = ci.p.x;
+		float y = ci.p.y;
+		(void)x;
+		(void)y;
 
-        vector3 f = c * g * dt;
-        vector3 a = f;
-        ci.v += a * dt;
-        ci.p.y += ci.v.y * dt;
-        */
+		vector3 f = c * g * dt;
+		vector3 a = f;
+		ci.v += a * dt;
+		ci.p.x += ci.v.x * dt;
+		ci.p.y += ci.v.y * dt;
     }
 }
 void CIRCLE_MANAGER::update() {

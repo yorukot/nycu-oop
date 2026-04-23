@@ -331,5 +331,9 @@ void GRAPH_MANAGER::update( ) {
 void GRAPH_MANAGER::reset()
 {
 	mRotationAngle = 0;
+	setCurves_Random_C();
 	setCurves_RotationAngle(mRotationAngle);
+	for (int i = 0; i < mNumCurves; ++i) {
+		mCurves[i].computePoints();
+	}
 }

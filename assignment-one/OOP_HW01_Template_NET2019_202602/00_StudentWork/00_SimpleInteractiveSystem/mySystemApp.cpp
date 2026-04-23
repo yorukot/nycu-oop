@@ -11,18 +11,15 @@
 
 using namespace std;
 
-#define STUDENT_INFO "Name:XYZ   ID:0123456789"
+#define STUDENT_INFO "Name:HSIAO-ERHHSI   ID:614002201"
 
 void MY_SYSTEM_APP::showMyStudentInfo( ) const
 {
-	///////////////////////////////////////////////////////
-	// TODO: ADD YOUR OWN CODE or MODIFY the code
-	///////////////////////////////////////////////////////
 	cout << "*******************************" << endl;
     cout << "Date:2026/03/21" << endl;
-	cout << "Student ID:\t" << endl;
-	cout << "Student Name:\t" << endl;
-	cout << "Student Email:\t" << endl;
+	cout << "Student ID:\t614002201" << endl;
+	cout << "Student Name:\tHSIAO-ERHHSI" << endl;
+	cout << "Student Email:\thi@yorukot.me" << endl;
 	cout << "*******************************" << endl;
 }
 
@@ -37,6 +34,7 @@ MY_SYSTEM_APP::MY_SYSTEM_APP( )
 void MY_SYSTEM_APP::initApp( )
 {
 	mFlgShow_Grid = true;
+	updateGraphManagerTitle();
 }
 
 void MY_SYSTEM_APP::update( )
